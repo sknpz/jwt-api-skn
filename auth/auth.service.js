@@ -5,16 +5,18 @@ const LogoutList = require('./logoutList.model');
 const authService = {
     login: async (email, password) => {
         const user = await userService.findByEmail(email);
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!user || !isMatch) {
+        if (!user) {
             throw new Error('Invalid email or password');
         }
-        const token = jwt.sign(
-            {
-             id: user.id,
-              email: user.email,
-              name: user.name
-            }, process.env.JWT_SECRET, 
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            throw new Error('Invalid email or password');
+        }
+        const token = jwt.sign({
+            id: user.id,
+            email: user.email,
+            name: user.name
+            }, process.env.JWT_SECRET,
             { expiresIn: '1h', });
         return token;
     },
@@ -22,7 +24,6 @@ const authService = {
     logout: async (token) => {
         // Implement logout logic if needed (e.g., token blacklisting)
         await LogoutList.create({ token });
-        
     },
 
     verifyToken: async (token) => {
@@ -32,8 +33,6 @@ const authService = {
             if (isBlacklisted) {
                 throw new Error('Token revogado');
             }
-          
-        
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             return decoded;
         } catch (error) {
