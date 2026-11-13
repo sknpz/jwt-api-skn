@@ -42,13 +42,17 @@ O seed cria o administrador quando não existe nenhum:
 |---|---|---|
 | Administrador | `admin@biblioteca.com` | `123456` |
 
-### Dados de demonstração (opcional)
+### Banco de dados
+
+O `database.sqlite` vem no repositório, já com os dados de demonstração: categorias, autores, livros, leitores, um empréstimo no prazo e um atrasado (devolvê-lo gera multa), além do atendente `atendente@biblioteca.com` / `123456`. A API usa esse arquivo direto, sem nenhum passo extra.
+
+Para começar do zero, apague o `database.sqlite` e gere de novo:
 
 ```bash
 npm run seed:demo
 ```
 
-Cria categorias, autores, livros, leitores, um empréstimo no prazo e um com 5 dias de atraso, além do atendente `atendente@biblioteca.com` / `123456`. Só roda com o banco sem livros. Para começar do zero, apague o `database.sqlite`.
+O script só roda com o banco sem livros.
 
 ### Testar no Postman
 
