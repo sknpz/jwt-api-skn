@@ -8,9 +8,7 @@ const UNIQUE_FIELD_LABELS = {
     cpf: 'este CPF'
 };
 
-// O Express 5 encaminha para cá qualquer erro lançado em handler async,
-// então os controllers não precisam de try/catch.
-// Precisa ter os 4 parâmetros: é assim que o Express reconhece o middleware de erro.
+// O Express 5 manda para cá os erros de handler async. Os 4 parâmetros são obrigatórios.
 const errorHandler = (error, req, res, next) => {
     if (error instanceof HttpError) {
         return res.status(error.status).json({ error: error.message });

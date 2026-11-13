@@ -19,7 +19,7 @@ const User = db.define('User', {
         }
     },
     isAdmin: {
-        type: DataTypes.BOOLEAN, // Define the isAdmin field with a boolean data type
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
     },
@@ -42,7 +42,6 @@ const User = db.define('User', {
         defaultValue: true
     }
 }, {
-    // A senha só sai do banco quando alguém pede o escopo withPassword (o login).
     defaultScope: {
         attributes: { exclude: ['password'] }
     },

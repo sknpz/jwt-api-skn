@@ -8,7 +8,6 @@ const readerService = {
     create: async (data) => {
         return await Reader.create(pick(data, FIELDS));
     },
-    // ?search= procura por nome ou CPF (usado na tela de novo empréstimo).
     findAll: async ({ search }) => {
         const where = {};
         if (typeof search === 'string' && search) {

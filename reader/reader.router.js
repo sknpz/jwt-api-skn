@@ -4,7 +4,6 @@ const router = Router();
 const readerController = require('./reader.controller');
 const authMiddleware = require('../auth/auth.middleware');
 
-// Leitores são responsabilidade do atendente: qualquer usuário logado acessa.
 router.use(authMiddleware);
 
 router.get('/', readerController.findAll);

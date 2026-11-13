@@ -10,7 +10,6 @@ const REFRESH_TOKEN_DAYS = 7;
 
 const invalidRefreshToken = () => new HttpError(401, 'Refresh token inválido ou expirado');
 
-// O access token é um JWT: a API confia nele só pela assinatura, sem ir ao banco.
 const signAccessToken = (user) => jwt.sign({
     id: user.id,
     name: user.name,
@@ -18,8 +17,7 @@ const signAccessToken = (user) => jwt.sign({
     isAdmin: user.isAdmin
 }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m' });
 
-// O refresh token é só uma string aleatória: quem diz se ele vale é a tabela
-// RefreshToken. É isso que permite revogar, coisa que um JWT sozinho não permite.
+// Refresh token é string aleatória validada pela tabela: é o que permite revogar.
 const createRefreshToken = async (user, transaction) => {
     const token = crypto.randomBytes(40).toString('hex');
     const expiresAt = new Date(Date.now() + REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000);
@@ -60,8 +58,7 @@ const authService = {
         if (!stored) {
             throw invalidRefreshToken();
         }
-        // Token já revogado voltando a ser usado: alguém tem uma cópia dele.
-        // Como não dá para saber quem é o dono legítimo, derruba todas as sessões.
+        // Token revogado sendo reusado: alguém tem uma cópia. Derruba todas as sessões.
         if (stored.revoked) {
             await revokeAllFromUser(stored.userId);
             throw invalidRefreshToken();
@@ -74,10 +71,8 @@ const authService = {
             throw invalidRefreshToken();
         }
 
-        // Rotação: revogar o antigo e criar o novo acontecem juntos ou não acontecem.
         const newRefreshToken = await db.transaction(async (transaction) => {
-            // O "revoked: false" no where garante que, se duas requisições chegarem
-            // com o mesmo token ao mesmo tempo, só uma consegue revogar.
+            // revoked: false no where: com duas requisições simultâneas, só uma consegue revogar.
             const [revokedCount] = await RefreshToken.update(
                 { revoked: true },
                 { where: { id: stored.id, revoked: false }, transaction }
@@ -99,7 +94,6 @@ const authService = {
         if (typeof token !== 'string') {
             throw new HttpError(400, 'Informe o refresh token');
         }
-        // O userId no where impede de revogar o token de outra pessoa.
         await RefreshToken.update({ revoked: true }, { where: { token, userId } });
     },
 

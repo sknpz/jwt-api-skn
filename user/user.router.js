@@ -5,7 +5,6 @@ const userController = require('./user.controller');
 const authMiddleware = require('../auth/auth.middleware');
 const isAdmin = require('../auth/isAdmin.middleware');
 
-// Gestão de atendentes: todas as rotas são só para administrador.
 router.use(authMiddleware, isAdmin);
 
 router.get('/', userController.findAll);

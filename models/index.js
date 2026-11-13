@@ -7,13 +7,8 @@ const BookAuthor = require('../book/bookAuthor.model');
 const Reader = require('../reader/reader.model');
 const Loan = require('../loan/loan.model');
 
-// As associações ficam aqui, num lugar só, para os models não precisarem se
-// importar entre si (o que criaria dependência circular).
-//
-// onDelete RESTRICT: o banco recusa excluir o "pai" enquanto houver filhos. É a
-// última barreira da regra 6; os services respondem 409 com a mensagem clara.
+// onDelete RESTRICT: o banco recusa excluir o "pai" enquanto houver filhos (última barreira da regra 6).
 
-// Category 1:N Book
 Category.hasMany(Book, {
     as: 'books',
     foreignKey: { name: 'categoryId', allowNull: false },
@@ -25,7 +20,6 @@ Book.belongsTo(Category, {
     onDelete: 'RESTRICT'
 });
 
-// Book N:N Author, pela tabela BookAuthor
 Book.belongsToMany(Author, {
     through: BookAuthor,
     as: 'authors',
@@ -39,7 +33,6 @@ Author.belongsToMany(Book, {
     otherKey: 'bookId'
 });
 
-// Book 1:N Loan
 Book.hasMany(Loan, {
     as: 'loans',
     foreignKey: { name: 'bookId', allowNull: false },
@@ -51,7 +44,6 @@ Loan.belongsTo(Book, {
     onDelete: 'RESTRICT'
 });
 
-// Reader 1:N Loan
 Reader.hasMany(Loan, {
     as: 'loans',
     foreignKey: { name: 'readerId', allowNull: false },
@@ -63,7 +55,6 @@ Loan.belongsTo(Reader, {
     onDelete: 'RESTRICT'
 });
 
-// User 1:N Loan (o atendente que registrou o empréstimo)
 User.hasMany(Loan, {
     as: 'loans',
     foreignKey: { name: 'userId', allowNull: false },
@@ -75,7 +66,6 @@ Loan.belongsTo(User, {
     onDelete: 'RESTRICT'
 });
 
-// User 1:N RefreshToken (o token não faz sentido sem o usuário)
 User.hasMany(RefreshToken, {
     as: 'refreshTokens',
     foreignKey: { name: 'userId', allowNull: false },

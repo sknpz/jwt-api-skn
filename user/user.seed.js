@@ -1,8 +1,6 @@
 const User = require('./user.model');
 const userService = require('./user.service');
 
-// A rota de criar usuário exige admin, então o primeiro admin nasce aqui.
-// Só cria se não houver nenhum: reiniciar a API não duplica nem altera nada.
 const seedAdmin = async () => {
     const admins = await User.count({ where: { isAdmin: true } });
     if (admins > 0) {

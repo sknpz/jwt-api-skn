@@ -12,7 +12,6 @@ const INCLUDE = [
 ];
 
 const parseTotalCopies = (value) => {
-    // Number(null) e Number('') dão 0: sem essa checagem, um valor vazio zeraria o total.
     const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.trim() !== '');
     const total = Number(value);
     if (!isNumeric || !Number.isInteger(total) || total < 0) {
@@ -55,8 +54,7 @@ const buildFilters = async ({ title, categoryId, authorId, available }) => {
         where.availableCopies = 0;
     }
     if (authorId) {
-        // Busca os ids antes: filtrar direto no include faria a resposta trazer
-        // só o autor pesquisado, escondendo os coautores do livro.
+        // Filtrar no include esconderia os coautores do livro: busca os ids antes.
         const links = await BookAuthor.findAll({ where: { authorId }, attributes: ['bookId'] });
         where.id = links.map((link) => link.bookId);
     }
@@ -74,7 +72,7 @@ const bookService = {
                 ...pick(data, FIELDS),
                 categoryId,
                 totalCopies,
-                availableCopies: totalCopies // livro novo: nenhum exemplar emprestado
+                availableCopies: totalCopies
             }, { transaction });
             await book.setAuthors(authorIds, { transaction });
             return book.id;
@@ -104,8 +102,6 @@ const bookService = {
             if (!book) {
                 return false;
             }
-            // availableCopies não vem do cliente: quem mexe nele são os empréstimos.
-            // Mudar o total só soma ou tira a diferença, mantendo os que estão emprestados.
             if (newTotal !== null) {
                 const loaned = book.totalCopies - book.availableCopies;
                 if (newTotal < loaned) {
@@ -127,7 +123,6 @@ const bookService = {
         if (!book) {
             return null;
         }
-        // Regra 6. Empréstimo devolvido também conta: é o histórico do leitor.
         if (await book.countLoans() > 0) {
             throw new HttpError(409, 'Não é possível excluir: o livro tem empréstimos registrados');
         }

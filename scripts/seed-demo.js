@@ -1,6 +1,3 @@
-// Dados de demonstração: npm run seed:demo
-// Inclui um empréstimo já atrasado, porque pela API o prazo sempre nasce 7 dias à
-// frente, e sem ele não daria para mostrar uma devolução com multa na hora.
 require('dotenv').config();
 const db = require('../config/db');
 const { Author, Book, Category, Loan, Reader, User } = require('../models');
@@ -86,8 +83,8 @@ const run = async () => {
             { name: 'Carla Dias', cpf: '11122233344', phone: '(44) 99999-0003' }
         ], { validate: true, transaction });
 
-        await lend(domCasmurro, lia, attendant, addDays(today(), 3), transaction); // no prazo
-        await lend(cleanCode, bruno, attendant, addDays(today(), -5), transaction); // 5 dias de atraso
+        await lend(domCasmurro, lia, attendant, addDays(today(), 3), transaction);
+        await lend(cleanCode, bruno, attendant, addDays(today(), -5), transaction);
     });
 
     console.log('Dados de demonstração criados.');

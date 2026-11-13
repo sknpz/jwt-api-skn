@@ -46,7 +46,6 @@ const Book = db.define('Book', {
     }
 }, {
     validate: {
-        // Regra entre dois campos: fica no nível do model, não no de um campo só.
         availableNotAboveTotal() {
             if (this.availableCopies > this.totalCopies) {
                 throw new Error('Os exemplares disponíveis não podem passar do total');

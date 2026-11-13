@@ -32,9 +32,7 @@ const Loan = db.define('Loan', {
                 msg: 'Status de empréstimo inválido'
             }
         },
-        // No banco o empréstimo em aberto fica como ATIVO. ATRASADO é calculado
-        // na leitura (regra 5): não depende de nenhum processo atualizar a linha
-        // quando o prazo vence.
+        // ATRASADO não é gravado: é calculado na leitura a partir do prazo (regra 5).
         get() {
             const status = this.getDataValue('status');
             const dueDate = this.getDataValue('dueDate');

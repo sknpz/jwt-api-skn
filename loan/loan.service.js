@@ -15,7 +15,6 @@ const INCLUDE = [
     { model: User, as: 'user', attributes: ['id', 'name'] }
 ];
 
-// No banco, ATIVO e ATRASADO são a mesma coisa (status ATIVO): a diferença é o prazo.
 const whereForStatus = (status) => {
     if (status === LOAN_STATUS.ATIVO) {
         return { status: LOAN_STATUS.ATIVO, dueDate: { [Op.gte]: today() } };
@@ -39,10 +38,7 @@ const loanService = {
         const bookId = parseId(data?.bookId);
         const readerId = parseId(data?.readerId);
 
-        // Tudo na mesma transação (regra 7): se algo falhar depois de criar o
-        // empréstimo, o estoque não muda e o empréstimo também não fica gravado.
-        // Como ela segura a escrita do início ao fim, dois empréstimos simultâneos
-        // não conseguem pegar o último exemplar ao mesmo tempo.
+        // Transação única (regra 7): segura a escrita, então dois empréstimos não pegam o último exemplar.
         const loanId = await db.transaction(async (transaction) => {
             const book = await Book.findByPk(bookId, { transaction });
             if (!book) {
@@ -130,7 +126,6 @@ const loanService = {
         });
     },
 
-    // Totais do dashboard. Cada status é contado com a mesma regra das listagens.
     countByStatus: async (status) => {
         return await Loan.count({ where: whereForStatus(status) });
     }

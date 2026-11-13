@@ -18,7 +18,7 @@ const userService = {
         const data = pick(userData, ['name', 'username', 'email', 'isAdmin']);
         data.password = await hashPassword(userData?.password);
         const user = await User.create(data);
-        return User.findByPk(user.id); // relê para a resposta não trazer a senha
+        return User.findByPk(user.id);
     },
     findById: async (id) => {
         return await User.findByPk(id);
@@ -38,7 +38,6 @@ const userService = {
             return null;
         }
         const data = pick(userData, ['name', 'username', 'email', 'isAdmin']);
-        // Sem isso, o único admin poderia se rebaixar e o sistema ficaria sem admin.
         if (user.id === requesterId && data.isAdmin === false) {
             throw new HttpError(400, 'Você não pode remover o seu próprio acesso de administrador');
         }
@@ -60,7 +59,6 @@ const userService = {
             throw new HttpError(400, 'Você não pode desativar o seu próprio usuário');
         }
         await user.update({ active });
-        // Desativado perde as sessões: sem refresh, o acesso acaba quando o access token expirar.
         if (!active) {
             await RefreshToken.update({ revoked: true }, { where: { userId: user.id, revoked: false } });
         }

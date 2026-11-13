@@ -26,7 +26,6 @@ const categoryService = {
         if (!category) {
             return null;
         }
-        // Regra 6. countBooks vem do hasMany com as: 'books' (models/index.js).
         if (await category.countBooks() > 0) {
             throw new HttpError(409, 'Não é possível excluir: a categoria tem livros cadastrados');
         }

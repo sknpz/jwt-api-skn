@@ -14,7 +14,6 @@ const Reader = db.define('Reader', {
         type: DataTypes.STRING(11),
         allowNull: false,
         unique: true,
-        // Guarda só os dígitos: "123.456.789-00" e "12345678900" são o mesmo CPF.
         set(value) {
             this.setDataValue('cpf', String(value ?? '').replace(/\D/g, ''));
         },

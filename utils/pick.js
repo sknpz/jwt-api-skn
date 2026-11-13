@@ -1,6 +1,4 @@
-// Copia só os campos permitidos do corpo da requisição. Evita que o cliente
-// altere o que não deve (id, active...) mandando o campo no JSON.
-// Campo ausente fica de fora, para um update parcial não apagar o valor atual.
+// Só os campos permitidos: o cliente não altera id, active... mandando no JSON.
 const pick = (source, fields) => {
     const result = {};
     for (const field of fields) {

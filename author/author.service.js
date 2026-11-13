@@ -26,8 +26,7 @@ const authorService = {
         if (!author) {
             return null;
         }
-        // Regra 6. Aqui o banco não ajudaria: excluir o autor apagaria só a linha
-        // de BookAuthor, e o livro ficaria sem autor sem ninguém perceber.
+        // Excluir o autor apagaria só a linha de BookAuthor e o livro ficaria sem autor.
         if (await author.countBooks() > 0) {
             throw new HttpError(409, 'Não é possível excluir: o autor tem livros cadastrados');
         }

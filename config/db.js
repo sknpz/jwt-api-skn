@@ -3,8 +3,7 @@ const sequelize = require('sequelize');
 const db = new sequelize( {
     dialect: 'sqlite',
     storage: './database.sqlite',
-    // A transação já começa com a trava de escrita. Sem isso, duas transações que
-    // leem e depois escrevem ao mesmo tempo terminam em "database is locked".
+    // IMMEDIATE: a transação já nasce com a trava de escrita; evita "database is locked".
     transactionType: 'IMMEDIATE'
 });
 

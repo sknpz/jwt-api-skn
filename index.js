@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const db = require('./config/db');
-require('./models'); // registra os models e as associações antes do sync
+require('./models');
 const express = require('express');
 const cors = require('cors');
 const authRouter = require('./auth/auth.router');
@@ -36,10 +36,10 @@ app.use('/v1/reports', reportRouter);
 app.use((req, res) => {
     res.status(404).json({ error: 'Rota não encontrada' });
 });
-app.use(errorHandler); // tem que vir depois de todas as rotas
+app.use(errorHandler);
 
 const start = async () => {
-    await db.sync(); // só abre a porta depois que as tabelas existem
+    await db.sync();
     await seedAdmin();
     app.listen(PORT, () => {
         console.log(`SERVIDOR RODANDO http://localhost:${PORT}`);

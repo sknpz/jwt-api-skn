@@ -3,7 +3,6 @@ const foundOr404 = require('../utils/foundOr404');
 
 const loanController = {
     create: async (req, res) => {
-        // O atendente vem do token, não do corpo: ninguém registra em nome de outro.
         res.status(201).json(await loanService.create(req.body, req.user.id));
     },
     returnLoan: async (req, res) => {

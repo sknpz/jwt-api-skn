@@ -8,7 +8,7 @@ const reportService = {
             Book.count(),
             loanService.countByStatus(LOAN_STATUS.ATIVO),
             loanService.countByStatus(LOAN_STATUS.ATRASADO),
-            Loan.sum('fine') // null quando ainda não há empréstimo
+            Loan.sum('fine')
         ]);
         return { totalBooks, activeLoans, overdueLoans, totalFines: totalFines ?? 0 };
     }
